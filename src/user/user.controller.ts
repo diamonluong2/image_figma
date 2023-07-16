@@ -19,4 +19,8 @@ export class UserController {
     return this.userService.updateUser(Number(id), body);
   }
 
+  @Delete("/delete-user/:id")
+  deleteUser(@Param("id") id: string) {
+    return this.userService.deleteUser(Number(id));
+  }
 }

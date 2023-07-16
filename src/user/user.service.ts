@@ -7,10 +7,11 @@ import { PrismaClient, nguoi_dung } from '@prisma/client';
 export class UserService {
     prisma = new PrismaClient();
 
-    async getUser(): Promise<nguoi_dung[]> {
+    async getUser() {
         let data = await this.prisma.nguoi_dung.findMany();
+        const responseContent = { message: "Lấy danh sách hình ảnh thành công", content: { data: data } }
 
-        return data;
+        return responseContent;
     }
     async updateUser(id: number, body: any) {
         const createdUser = await this.prisma.nguoi_dung.findFirst({ where: { nguoi_dung_id: id } });
@@ -33,6 +34,18 @@ export class UserService {
 
         })
         return "Cập nhật thành công"
+    }
+    async deleteUser(id: number) {
+        const createdUser = await this.prisma.nguoi_dung.findFirst({ where: { nguoi_dung_id: id } });
+        if (!createdUser) {
+            throw new HttpException('Không tìm thấy user', 400);
+        }
+        const deleteUser = await this.prisma.nguoi_dung.delete({
+            where: {
+                nguoi_dung_id: id
+            }
+        });
+        return "Xóa user thành công"
     }
 
 

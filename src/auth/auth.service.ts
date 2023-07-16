@@ -16,10 +16,12 @@ export class AuthService {
     async login(body: any) {
         try {
             const createdUser = await this.prisma.nguoi_dung.findFirst({ where: { email: body.email } });
-            if (createdUser) {
+
+            if (createdUser && createdUser.mat_khau === body.mat_khau) {
                 let token = this.jwtService.signAsync({ data: "data" }, { secret: this.configService.get("KEY"), expiresIn: "5m" });
                 return token;
             }
+            throw new HttpException('Email hoặc mật khẩu không đúng', 400);
 
         } catch (error) {
             throw new HttpException("Lỗi BE", 500)
