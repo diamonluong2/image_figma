@@ -23,7 +23,7 @@ export class ImageService {
       const responseContent = { message: "Upload hình ảnh thành công" }
       return responseContent;
     } catch (error) {
-      throw new HttpException('Lỗi BE', 500);
+      throw new HttpException("Lỗi BE", 500);
 
     }
   }
@@ -53,6 +53,58 @@ export class ImageService {
       throw new HttpException('Lỗi BE', 500);
     }
   }
+
+  async getImagebyUserid(id: number) {
+    try {
+      const image = await this.prisma.hinh_anh.findMany({
+        where: { nguoi_dung_id: id }
+      });
+      if (!image) {
+        throw new HttpException('Không tìm thấy hình ảnh', 400);
+      }
+      const responseContent = { message: "Lấy danh sách hình ảnh thành công", content: { data: image } }
+      return responseContent;
+    } catch (error) {
+      throw new HttpException('Lỗi BE', 500);
+    }
+  }
+
+
+  async getSaveImage(idImage: number, idUser: number) {
+    try {
+      const image = await this.prisma.luu_anh.findFirst({
+        where: { hinh_id: idImage, nguoi_dung_id: idUser }
+      });
+      if (!image) {
+        throw new HttpException('Không tìm thấy hình ảnh', 400);
+      }
+      const responseContent = { message: "Hình ảnh được lưu thành công", status: 200 }
+      return responseContent;
+    } catch (error) {
+      throw new HttpException(error.message, error.status);
+
+
+    }
+  }
+
+  async getSaveImagebyUserid(idUser: number) {
+    try {
+      const image = await this.prisma.luu_anh.findMany({
+        include: { hinh_anh: true },
+        where: { nguoi_dung_id: idUser }
+      });
+      if (!image) {
+        throw new HttpException('Không tìm thấy hình ảnh', 400);
+      }
+      const responseContent = { message: "Hình ảnh được lưu thành công", status: 200, content: { data: image } }
+      return responseContent;
+    } catch (error) {
+      throw new HttpException(error.message, error.status);
+    }
+  }
+
+
+
 
   async getImagebyName(name: string) {
     try {

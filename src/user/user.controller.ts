@@ -3,10 +3,12 @@ import { UserService } from './user.service';
 import { nguoi_dung } from '@prisma/client';
 import { AnyFilesInterceptor } from '@nestjs/platform-express';
 import { AuthGuard } from '@nestjs/passport';
+import { ApiTags } from '@nestjs/swagger';
 
 
+@ApiTags("user")
 @Controller('/user')
-// @UseGuards(AuthGuard("jwt"))
+@UseGuards(AuthGuard("jwt"))
 export class UserController {
   constructor(private readonly userService: UserService) { }
 
